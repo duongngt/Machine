@@ -1,0 +1,30 @@
+/* list products */
+$yellow : #f5bd10;
+$roboto: 'Roboto', sans-serif;
+.MenuPanel {				
+	padding: 0;
+	ul {
+		border: 1px solid #ebebeb;
+		li {
+			padding: 24px 0;
+			border-bottom: 1px solid #ebebeb;
+			
+			a {
+				color: #898989;
+				font-size: 13px;
+				padding-left: 20px;
+				text-decoration: none;
+				i {
+					font-size: 10px;
+					padding-right: 8px;
+				}							
+			}
+		}
+		:last-child {border-bottom: none;}
+		:hover {
+					background-color: #202020;
+					a {color:$yellow;};
+					transition: 0.3s;
+				}
+	}
+}

@@ -1,0 +1,25 @@
+/* list products */
+.MenuPanel {
+  padding: 0; }
+  .MenuPanel ul {
+    border: 1px solid #ebebeb; }
+    .MenuPanel ul li {
+      padding: 24px 0;
+      border-bottom: 1px solid #ebebeb; }
+      .MenuPanel ul li a {
+        color: #898989;
+        font-size: 13px;
+        padding-left: 20px;
+        text-decoration: none; }
+        .MenuPanel ul li a i {
+          font-size: 10px;
+          padding-right: 8px; }
+    .MenuPanel ul :last-child {
+      border-bottom: none; }
+    .MenuPanel ul :hover {
+      background-color: #202020;
+      transition: 0.3s; }
+      .MenuPanel ul :hover a {
+        color: #f5bd10; }
+
+/*# sourceMappingURL=styHotProduct.css.map */

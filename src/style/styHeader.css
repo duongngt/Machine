@@ -1,0 +1,73 @@
+/* css header */
+.Header .NavRegister .wrap .social-link li {
+  padding: 18px 18px;
+  border-left: 1px solid #e1e1e1; }
+.Header .NavRegister .wrap .social-link > :last-child {
+  border-right: 1px solid #e1e1e1; }
+.Header .NavRegister .wrap .social-link :hover {
+  color: #ffffff;
+  background-color: #f5bd10; }
+.Header .NavRegister .wrap .user {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  font-size: 12px; }
+  .Header .NavRegister .wrap .user li {
+    padding: 20px 20px;
+    border-left: 1px solid #e1e1e1; }
+  .Header .NavRegister .wrap .user :last-child {
+    border-right: 1px solid #e1e1e1; }
+.Header .NavBran .logo-phone .wrap .number-phone div {
+  padding: 40px 0;
+  font-family: "Roboto", sans-serif; }
+  .Header .NavBran .logo-phone .wrap .number-phone div strong {
+    color: #f5bd10; }
+  .Header .NavBran .logo-phone .wrap .number-phone div p {
+    color: #afabab; }
+.Header .NavBran .logo-phone .wrap .search {
+  border: 1px solid #e1e1e1;
+  border-radius: 30px;
+  margin: 40px 0;
+  width: 280px;
+  padding: 10px 0;
+  color: #e1e1e1; }
+  .Header .NavBran .logo-phone .wrap .search input {
+    border: none;
+    color: #e1e1e1; }
+.Header .NavBran .Nav {
+  width: 100%;
+  background-color: #202020; }
+  .Header .NavBran .Nav .wrap .navbar-nav .nav-item {
+    font-family: "Roboto", sans-serif;
+    padding: 28px;
+    border-left: 1px solid #333333; }
+    .Header .NavBran .Nav .wrap .navbar-nav .nav-item .nav-link {
+      color: #ffffff;
+      font-size: 14px;
+      text-decoration: none; }
+  .Header .NavBran .Nav .wrap .navbar-nav > :last-child {
+    border-right: 1px solid #333333; }
+  .Header .NavBran .Nav .wrap .navbar-nav :hover {
+    background-color: #f5bd10; }
+  .Header .NavBran .Nav .wrap .cart {
+    color: #ffffff;
+    position: relative;
+    padding: 0px 40px;
+    border-right: 1px solid #333333;
+    border-left: 1px solid #333333; }
+    .Header .NavBran .Nav .wrap .cart i {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); }
+    .Header .NavBran .Nav .wrap .cart p {
+      font-size: 12px;
+      padding: 0px 4px;
+      background-color: #f5bd10;
+      border-radius: 50%;
+      position: absolute;
+      top: 30%;
+      left: 45%; }
+.Header .intro .wrap .slider {
+  width: 70%; }
+
+/*# sourceMappingURL=styHeader.css.map */
