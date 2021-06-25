@@ -34,7 +34,7 @@ class App extends React.Component {
     });
   }
   static getDerivedStateFromProps(props){
-    return {showPopup: props.showPopup}
+    return {showPopup:props.showPopup}
   }
   render(){
     return ( 

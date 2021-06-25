@@ -1,4 +1,4 @@
-const stateDefault={categories:[],objDetail:null, showPopup:"none"}
+const stateDefault={categories:[],objDetail:null,showPopup:"none",user:null}
 function reducer(state=stateDefault, action){
 	switch(action.type){
 		case "GETDATA":
@@ -8,8 +8,11 @@ function reducer(state=stateDefault, action){
 		case "SHOWDETAIL":
 			state.objDetail = action.data;
 			return {...state};
-		case "SHOWPOPUPLOGIN":
+		case "SHOWDPOPUPLOGIN":
 			state.showPopup = action.data;
+			return {...state};
+		case "LOGIN":
+			state.user = action.data;
 			return {...state};
 		default:
 			return state;

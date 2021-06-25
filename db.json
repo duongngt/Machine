@@ -10,17 +10,6 @@
       "nameLogin": "duong",
       "passwordLogin": "1234",
       "id": 1
-    },
-    {
-      "name": "Nguyên Tuấn Dương",
-      "email": "duongngt16@gmail.com",
-      "password": "1234",
-      "re-password": "1234",
-      "address": "đà nẵng",
-      "phone": "0795466457",
-      "nameLogin": "duong",
-      "passwordLogin": "1234",
-      "id": 2
     }
   ],
   "categories": [

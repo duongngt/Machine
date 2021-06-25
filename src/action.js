@@ -12,7 +12,13 @@ export function ShowProductDetail(res){
 }
 export function ShowPopupLogin(data){
 	return{
-		type: "SHOWPOPUPLOGIN",
+		type: "SHOWDPOPUPLOGIN",
+		data: data
+	}
+}
+export function Login(data){
+	return{
+		type: "LOGIN",
 		data: data
 	}
 }

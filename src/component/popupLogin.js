@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import {connect} from 'react-redux';
-import {ShowPopupLogin} from '../action.js'
+import {ShowPopupLogin,Login} from '../action.js';
+import axios from '../../node_modules/axios';
 
 let Div = styled.div`
   z-index:3;
@@ -44,27 +45,70 @@ let Div = styled.div`
   }
 `
 class PopupLogin extends React.Component {
-  handleClosePopup=(e)=>{
+  constructor(props){
+    super(props);
+    this.state={
+      spanInf:{name:"*", password:"*"},
+      formLogin:{name:"", password:""}
+    }
+  }
+  handleClose=(e)=>{
     this.props.dispatch(ShowPopupLogin("none"));
   }
-  render(){
+  handleChange=(e)=>{
+    let copyState = this.state.formLogin;
+    copyState[e.target.name] = e.target.value;
+    this.setState({
+      formLogin: copyState
+    })
+  }
+  handleLogin=(e)=>{
+    let copySpan = this.state.spanInf;
+    let copyState = this.state.formLogin;
+    axios.get("http://localhost:3001/users?nameLogin="+this.state.formLogin.name)
+    .then(response=>{
+      if(response.data.length>0){
+        if(response.data[0].password == this.state.formLogin.password){
+          this.handleClose();
+          this.props.dispatch(Login(this.state.formLogin));
+          localStorage.setItem("user",JSON.stringify(this.state.formLogin));
+        }else{
+          copySpan.password = "Mật khẩu không đúng";
+          copyState.password="";
+          this.setState({
+            spanInf: copySpan,
+            formLogin:copyState
+          })
+        }
+      }
+      else{
+        copySpan.name = "Tài khoản không tồn tại!";
+        this.setState({
+          spanInf: copySpan
+        })
+      }
+    }).catch((err)=>{
+      console.log(err)
+    })
+  }
+  render(){  
     return ( 
-      <Div className="PopupLogin" style={{display:this.props.showPopup}} onClick={this.handleClosePopup}>
-        <div className="login">
+      <Div className="PopupLogin" style={{display:this.props.showPopup}} onClick={this.handleClose}>
+        <div className="login" onClick={(e)=>{e.stopPropagation()}}>
           <h3>Thông tin đăng nhập</h3>
           <div className="loginForm">
             <div className="loginForm-user form-gr">
-              <label>Tên đăng nhập</label>
-              <input type="text" name="nameLogin"/>
+              <label>Tên đăng nhập &nbsp;<span>{this.state.spanInf.name}</span></label>
+              <input type="text" name="name" value={this.state.formLogin.name} onChange={this.handleChange}/>
             </div>
             <div className="loginForm-password form-gr">
-              <label>Password</label>
-              <input type="password" name="password"/>
+              <label>Password &nbsp;<span>{this.state.spanInf.password}</span></label>
+              <input type="password" name="password" value={this.state.formLogin.password} onChange={this.handleChange}/>
             </div>
             <a>Quên mật khẩu</a>
           </div>
           <div className="login-btn-control">
-              <button className="btn">Login</button>
+              <button className="btn" onClick={this.handleLogin}>Login</button>
           </div>
         </div>
           
@@ -77,4 +121,4 @@ const mapDispatchToProps=(dispatch)=>{
     dispatch
   }
 }
-export default connect(null,mapDispatchToProps)(PopupLogin);
+export default connect(null,mapDispatchToProps) (PopupLogin);
