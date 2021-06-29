@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import {connect} from 'react-redux';
-import {ShowPopupLogin,Login} from '../action.js';
+import {ShowPopupLogin,Login,AddCart} from '../action.js';
 import axios from '../../node_modules/axios';
+import {GetUsercart} from './globalFunc.js'
 
 let Div = styled.div`
   z-index:3;
@@ -69,9 +70,12 @@ class PopupLogin extends React.Component {
     .then(response=>{
       if(response.data.length>0){
         if(response.data[0].password == this.state.formLogin.password){
-          this.handleClose();
-          this.props.dispatch(Login(this.state.formLogin));
-          localStorage.setItem("user",JSON.stringify(this.state.formLogin));
+          GetUsercart(response.data[0], function(resProducts, resCart){
+            this.props.dispatch(AddCart(resProducts, resCart));
+            this.props.dispatch(Login(response.data[0]));
+            localStorage.setItem("user",JSON.stringify(response.data[0]));
+            this.handleClose();
+          }.bind(this));
         }else{
           copySpan.password = "Mật khẩu không đúng";
           copyState.password="";
@@ -88,7 +92,7 @@ class PopupLogin extends React.Component {
         })
       }
     }).catch((err)=>{
-      console.log(err)
+      console.log(err) 
     })
   }
   render(){  
@@ -110,8 +114,7 @@ class PopupLogin extends React.Component {
           <div className="login-btn-control">
               <button className="btn" onClick={this.handleLogin}>Login</button>
           </div>
-        </div>
-          
+        </div>          
       </Div>
     );
   }

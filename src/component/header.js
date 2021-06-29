@@ -7,7 +7,7 @@ class Header extends React.Component {
     return ( 
       <div className="Header">
        <NavRegister/>
-       <NavBran countCart={this.props.countCart}/>
+       <NavBran/>
       </div>
     );
   }

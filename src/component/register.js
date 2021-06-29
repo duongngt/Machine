@@ -3,6 +3,8 @@ import Header from './header.js';
 import styled from 'styled-components';
 import {Validate} from './globalFunc.js';
 import axios from '../../node_modules/axios';
+import {connect} from 'react-redux';
+import {Notify,Login} from '../action.js';
 
 let Div = styled.div`
   h3 {
@@ -79,6 +81,8 @@ class Register extends React.Component {
           axios.post("http://localhost:3001/users",this.state.form)
           .then(response=>{
             console.log(response.data);
+            this.props.dispatch(Notify("block"));
+            this.props.dispatch(Login(response.data));
           }).catch((err)=>{
             console.log(err);
           })
@@ -98,7 +102,6 @@ class Register extends React.Component {
     }
   }
   render(){
-    
     return ( 
       <Div className="Register">
           <Header/>
@@ -154,5 +157,10 @@ class Register extends React.Component {
     );
   }
 }
+const mapDispatchToProps=(dispatch)=>{
+  return{
+    dispatch
+  }
+}
 
-export default Register;
+export default connect(null,mapDispatchToProps) (Register);

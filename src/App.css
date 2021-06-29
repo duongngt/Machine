@@ -66,9 +66,13 @@ body {
   padding: 20px 34px;
   color: #ffffff;
   background-color: #252525;
+  cursor: pointer;
 }
 .btn:hover{
   background-color: #f5bd10;
+}
+.ProductInf .btn {
+  padding: 10px 10px;
 }
 
 /*# sourceMappingURL=App.css.map */

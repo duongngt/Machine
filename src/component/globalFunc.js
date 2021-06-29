@@ -1,3 +1,6 @@
+import React from 'react';
+import axios from '../../node_modules/axios';
+
 function Validate(formObj){
   let submit = true, spanInf={};
   //validate email
@@ -43,5 +46,29 @@ function Validate(formObj){
   }
   // chhec submit
   return {submit:submit, spanInf:spanInf}
-}
-export {Validate};
+};
+function GetUsercart(user, callback){
+    axios.get("http://localhost:3001/carts?userId="+ user.id)
+    .then(response=>{
+      if(response.data.length>0 && response.data[0].cart.length>0){
+        GetProductCart(response.data[0].cart,[],0,function(res){
+          callback(res,response.data[0]);
+        })
+      }
+    })
+    function GetProductCart(cart,newCart,index,callback){
+      axios.get("http://localhost:3001/products?id="+ cart[index].productId)
+      .then(response2=>{
+        let obj = response2.data[0];
+        obj.amount = cart[index].amount;
+        newCart.push(obj);
+        index++;
+        if(index < cart.length){
+          GetProductCart(cart,newCart,index,callback);
+        }else{
+          callback(newCart);
+        }
+      })
+    }
+  }
+export {Validate,GetUsercart};

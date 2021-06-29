@@ -1,15 +1,60 @@
 import React from 'react';
+import axios from '../../node_modules/axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar} from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components'
 import {Link} from 'react-router-dom'
 import {connect} from 'react-redux';
-import {ShowProductDetail} from "../action.js"
+import {ShowProductDetail,ShowPopupLogin,AmountCart,AddCart} from "../action.js"
 class ProductInf extends React.Component {
   handleOrder=(e)=>{
-    var countCart = localStorage.getItem('countCart');
-    countCart=(countCart==null)? 1 : (parseInt(countCart) + 1);
-    this.props.changeCountCart(countCart);
+    console.log(this.props.user)
+    if(this.props.user!=null){
+      let hasExist = false, amount = 0;
+      let objCartDb = {...this.props.cartDb};
+      let myCartDb = objCartDb.cart;
+      let myCart = [...this.props.cart];
+      for(var i=0; i<myCartDb.length; i++){
+        if(myCartDb[i].productId == this.props.item.id){
+          myCartDb[i].amount++;
+          myCart[i].amount++;
+          hasExist = true;
+          break;
+        }
+      }
+      let objCart ={
+        userId: this.props.user.id,
+        cart: myCartDb
+      }
+      if(!hasExist){
+        amount++;
+        myCartDb.push({
+          productId: this.props.item.id,
+          amount: amount
+        })
+        let objPro = {...this.props.item};
+        objPro.amount = amount;
+        myCart.push(objPro);
+        
+      }
+      if(this.props.cartDb.length==0){
+        // post data----
+        axios.post("http://localhost:3001/carts",objCart)
+        .then(response=>{
+          this.props.dispatch(AddCart(myCart, objCartDb));
+        }).catch((err)=>{
+          console.log(err);
+        })
+      }
+      else{
+        axios.patch("http://localhost:3001/carts/"+this.props.cartDb.id, objCart)
+        .then(response=>{
+          this.props.dispatch(AddCart(myCart, objCartDb));
+        })
+      }
+    }else{
+      this.props.dispatch(ShowPopupLogin("block"))
+    }
   }
   viewDetail=(e,obj)=>{
     this.props.dispatch(ShowProductDetail(obj));
@@ -86,9 +131,9 @@ class ProductInf extends React.Component {
               <p style={evaluateText}>(12 đánh giá )</p>
             </div>
             <div class="button" style={styBntGr}>
-              <button class="buy" style={styBntProduct} onClick={this.handleOrder}>Add to cart</button>
+              <button class="buy btn" onClick={this.handleOrder}>Add to cart</button>
               <Link to ='/detailProduct'>
-                <button class="details" style={styBntProduct} onClick={(e)=>this.viewDetail(e,this.props.item)}>Xem chi tiết</button>
+                <button class="details btn" onClick={(e)=>this.viewDetail(e,this.props.item)}>Xem chi tiết</button>
               </Link>             
             </div>
         </div>           
@@ -101,4 +146,12 @@ const mapDispatchToProps=(dispatch)=>{
     dispatch
   }
  }
-export default connect(null,mapDispatchToProps)(ProductInf);
+const mapStateToProps=(state)=>{
+  return{
+    user:state.user,
+    amountCart: state.amountCart,
+    cart: state.cart,
+    cartDb: state.cartDb
+  }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(ProductInf);

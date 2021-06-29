@@ -52,9 +52,7 @@ class HotProducts extends React.Component {
           </div>
         </div>
       	{(this.props.categories!=undefined)? <MenuPanel categories={this.props.categories}/> : null }
-      	<ListProducts products={this.state.products}
-          changeCountCart={this.props.changeCountCart}
-          />
+      	<ListProducts products={this.state.products}/>
       </div>
     );
   }

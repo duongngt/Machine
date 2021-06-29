@@ -1,12 +1,14 @@
 import React from 'react';
+import axios from '../../node_modules/axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons'
 import { faFacebook,faGooglePlusG,faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import {Link} from 'react-router-dom'
 import {connect} from 'react-redux';
-import {ShowPopupLogin, Login} from '../action.js'
+import {ShowPopupLogin, Login, AddCart} from '../action.js'
 import styled from 'styled-components';
 import UserLogo from "../images/userDefault.png"
+import {GetUsercart} from './globalFunc.js'
 
 let Div =styled.div`
   .login-tab {
@@ -36,6 +38,7 @@ let Div =styled.div`
       top:80%;
       li{
         padding: 10px 10px;
+        cursor:pointer;
       }
       li:hover{
         background:#555555;
@@ -52,17 +55,21 @@ class NavRegister extends React.Component {
       user:{},
       showUser:"none",
       loginTab:"none",
-      showProfile:"none"
+      showProfile:"none",
+      GetUsercart: this.GetUsercart
     }
   }
   componentDidMount(){
     let user = localStorage.getItem("user");
     if(user!=null){
-      this.props.dispatch(Login(JSON.parse(user)));
-      return null;
+      user = JSON.parse(user);
+      this.props.dispatch(Login(user));
+      GetUsercart(user, function(resProducts, resCart){
+        this.props.dispatch(AddCart(resProducts, resCart));
+      }.bind(this))
     }
   }
-  static getDerivedStateFromProps(props){
+  static getDerivedStateFromProps(props,state){
     if(props.user!=null){
       return {loginTab:"none", showUser:"flex",user:props.user}
     }else{
@@ -79,6 +86,11 @@ class NavRegister extends React.Component {
     this.setState({
       showProfile:"none"
     })
+  }
+  handleLogout=(e)=>{
+    this.props.dispatch(Login(null));
+    this.props.dispatch(AddCart([],{}))
+    localStorage.removeItem("user");
   }
   render(){
   	var styUl={
@@ -103,10 +115,10 @@ class NavRegister extends React.Component {
     		</ul>
         <div className="user" style={{display:this.state.showUser}}>
             <img src={UserLogo} height="20" alt=""/>
-            <a onClick={this.showProfilePop}>Xin chào, {this.state.user.name}</a>
+            <a onClick={this.showProfilePop}>Xin chào, {this.state.user.nameLogin}</a>
             <ul className="popProfile" style={{display:this.state.showProfile}}>
               <li>Profile</li>
-              <li>Logout</li>
+              <Link to="/"><li onClick={this.handleLogout}>Logout</li></Link>
             </ul>
         </div>
       </div>

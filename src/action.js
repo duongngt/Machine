@@ -22,3 +22,22 @@ export function Login(data){
 		data: data
 	}
 }
+export function AmountCart(data){
+	return{
+		type: "AMOUNTCART",
+		data: data
+	}
+}
+export function AddCart(data,dataDb){
+	return{
+		type: "ADDCART",
+		data: data,
+		dataDb: dataDb
+	}
+}
+export function Notify(data){
+	return{
+		type: "NOTIFY",
+		data: data
+	}
+}
