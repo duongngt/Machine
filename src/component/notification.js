@@ -31,6 +31,11 @@ let Div = styled.div`
     h3{
       font-size:18px;
     }
+    .btn{
+      padding:8px;
+      margin-top:20px;
+      border-radius:4px;
+    }
   }
   .iconClose{
     position:absolute;
@@ -48,7 +53,11 @@ class Notification extends React.Component {
   constructor(props){
     super(props);
     this.state={
-      notify:"none"
+      notify:"none",
+      notifyContent:{
+        text:"",
+        buttons:[]
+      }
       
     }
   }
@@ -56,18 +65,36 @@ class Notification extends React.Component {
     this.props.dispatch(Notify("none"));
     
   }
-   static getDerivedStateFromProps(props){
-      return{
-        notify:props.notify
+  static getDerivedStateFromProps(props){
+      if(props.notify=="none"){
+        return {notify:props.notify}
+      }
+      else{
+        setTimeout(function(){props.dispatch(Notify("none"))}, 2000);
+        return{
+          notify:props.notify,
+          notifyContent: props.notifyContent
+        }
       }
    }
-  render(){		
+  render(){	
+    let btns = null;
+    if(this.state.notifyContent.buttons!=undefined){
+      btns = this.state.notifyContent.buttons.map((item,index)=>{
+        return(
+          <Link to="/cart"><button onClick={()=>this.props.dispatch(Notify("none"))} className="btn">{item.name}</button></Link>
+        )
+      })
+    }
     return ( 
-      <Div className="Notification" style={{display:this.state.notify}}>
+      <Div className="Notification" onClick={()=>this.props.dispatch(Notify("none"))} style={{display:this.state.notify}}>
         <div className="Notification-box">
           <Link to="/"><FontAwesomeIcon className="iconClose" icon={faTimesCircle} color="#f5bd10" onClick={this.handleClose}/></Link>
-      		<h3>Đăng ký thành công</h3>
+      		<h3>{this.state.notifyContent.text}</h3>
           <div><FontAwesomeIcon className="icon-check" icon={faCheckCircle} color="#f5bd10"/></div>
+          <div>
+            {btns}
+          </div>
         </div>
       </Div>
     );
@@ -75,7 +102,8 @@ class Notification extends React.Component {
 }
 const mapStateToProps=(state)=>{
   return {
-    notify:state.notify
+    notify:state.notify,
+    notifyContent:state.notifyContent
   }
 }
 const mapDispatchToProps=(dispatch)=>{

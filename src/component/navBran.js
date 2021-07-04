@@ -13,11 +13,9 @@ class NavBran extends React.Component {
 	    }
 	}
 	componentDidMount(){	
-		let amountCart = localStorage.getItem("amountCart");
-		if(amountCart!=null){
-			this.props.dispatch(AmountCart(parseInt(amountCart)));
-		}
+			this.props.dispatch(AmountCart(this.state.amountCart))
 	}
+
 	static getDerivedStateFromProps(props, state){
 		return{
 			amountCart:props.amountCart

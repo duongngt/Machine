@@ -1,4 +1,4 @@
-const stateDefault={categories:[],objDetail:null,showPopup:"none",user:null,notify:"none",amountCart:0,cart:[],cartDb:{},delItem:null}
+const stateDefault={categories:[],objDetail:null,showPopup:"none",user:null,notify:"none", notifyContent:{},amountCart:0,cart:[],cartDb:{},delItem:null}
 function reducer(state=stateDefault, action){
 	switch(action.type){
 		case "GETDATA":
@@ -16,7 +16,6 @@ function reducer(state=stateDefault, action){
 			return {...state};
 		case "AMOUNTCART":
 			state.amountCart = action.data;
-			localStorage.setItem("amountCart",state.amountCart)
 			return {...state};
 		case "ADDCART":
 			let sumAmount = 0;
@@ -29,6 +28,7 @@ function reducer(state=stateDefault, action){
 			return {...state};
 		case "NOTIFY":
 			state.notify = action.data;
+			state.notifyContent = action.obj
 			return {...state};
 		default:
 			return state;

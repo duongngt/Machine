@@ -5,63 +5,75 @@ import { faStar} from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components'
 import {Link} from 'react-router-dom'
 import {connect} from 'react-redux';
-import {ShowProductDetail,ShowPopupLogin,AmountCart,AddCart} from "../action.js"
+import {ShowProductDetail,ShowPopupLogin,AmountCart,AddCart,Notify} from "../action.js"
+import {formatMoney,AddToCart} from './globalFunc.js'
+
 class ProductInf extends React.Component {
   handleOrder=(e)=>{
-    console.log(this.props.user)
-    if(this.props.user!=null){
-      let hasExist = false, amount = 0;
-      let objCartDb = {...this.props.cartDb};
-      let myCartDb = objCartDb.cart;
-      let myCart = [...this.props.cart];
-      for(var i=0; i<myCartDb.length; i++){
-        if(myCartDb[i].productId == this.props.item.id){
-          myCartDb[i].amount++;
-          myCart[i].amount++;
-          hasExist = true;
-          break;
-        }
-      }
-      let objCart ={
-        userId: this.props.user.id,
-        cart: myCartDb
-      }
-      if(!hasExist){
-        amount++;
-        myCartDb.push({
-          productId: this.props.item.id,
-          amount: amount
-        })
-        let objPro = {...this.props.item};
-        objPro.amount = amount;
-        myCart.push(objPro);
-        
-      }
-      if(this.props.cartDb.length==0){
-        // post data----
-        axios.post("http://localhost:3001/carts",objCart)
-        .then(response=>{
-          this.props.dispatch(AddCart(myCart, objCartDb));
-        }).catch((err)=>{
-          console.log(err);
-        })
+    //console.log(this.props.cartDb)
+    AddToCart(this.props,1,(cart, cartDb)=>{
+      if(cart!=undefined){
+        this.props.dispatch(AddCart(cart, cartDb));
+        this.props.dispatch(Notify("block",{text:"Đã thêm thành công",buttons:[{text:"Xem giỏ hàng"}]}));
       }
       else{
-        axios.patch("http://localhost:3001/carts/"+this.props.cartDb.id, objCart)
-        .then(response=>{
-          this.props.dispatch(AddCart(myCart, objCartDb));
-        })
+        this.props.dispatch(ShowPopupLogin("block"))
       }
-    }else{
-      this.props.dispatch(ShowPopupLogin("block"))
-    }
+    });
+    // if(this.props.user!=null){
+    //   let hasExist = false, amount = 0;
+    //   let objCartDb = {...this.props.cartDb};
+    //   let myCartDb = (objCartDb.cart==undefined)? [] : objCartDb.cart;
+    //   let myCart = [...this.props.cart];
+    //   for(var i=0; i<myCartDb.length; i++){
+    //     if(myCartDb[i].productId == this.props.item.id){
+    //       myCartDb[i].amount++;
+    //       myCart[i].amount++;
+    //       hasExist = true;
+    //       break;
+    //     }
+    //   }
+    //   let objCart ={
+    //     userId: this.props.user.id,
+    //     cart: myCartDb
+    //   }
+    //   if(!hasExist){
+    //     amount++;
+    //     myCartDb.push({
+    //       productId: this.props.item.id,
+    //       amount: amount
+    //     })
+    //     let objPro = {...this.props.item};
+    //     objPro.amount = amount;
+    //     myCart.push(objPro);
+        
+    //   }
+    //   if(this.props.cartDb.cart==undefined){
+    //     // post data----
+    //     axios.post("http://localhost:3001/carts",objCart)
+    //     .then(response=>{
+    //       this.props.dispatch(AddCart(myCart, response.data));
+    //       this.props.dispatch(Notify("block",{text:"Đã thêm thành công",buttons:[{text:"Xem giỏ hàng"}]}));
+    //     }).catch((err)=>{
+    //       console.log(err);
+    //     })
+    //   }
+    //   else{
+    //     axios.patch("http://localhost:3001/carts/"+this.props.cartDb.id, objCart)
+    //     .then(response=>{
+    //       this.props.dispatch(AddCart(myCart, response.data));
+    //       this.props.dispatch(Notify("block",{text:"Đã thêm thành công",buttons:[{name:"Xem giỏ hàng"}]}));
+    //     })
+    //   }
+    // }else{
+    //   this.props.dispatch(ShowPopupLogin("block"))
+    // }
   }
   viewDetail=(e,obj)=>{
     this.props.dispatch(ShowProductDetail(obj));
     localStorage.setItem("objDetail",JSON.stringify(obj));
   }
   render(){		
-    //console.log(this.props.changeCountCart);
     const Div = styled.div`
         position:relative;
         text-align:center;
@@ -111,15 +123,15 @@ class ProductInf extends React.Component {
     }
     return ( 
       <Div className="ProductInf">
-        <Link to ='/detailProduct' onClick={(e)=>this.viewDetail(e,this.props.item)}>
-          <img className="image" src={this.props.item.img}
+        <Link to ='/detailProduct' onClick={(e)=>this.viewDetail(e,this.props.objDetail)}>
+          <img className="image" src={this.props.objDetail.img}
           style={{margin:"30px auto 36px"}}/>
         </Link>
        
         <div className="content">
              <p class="price" style={styPrice}>
-            {this.props.item.price}</p>
-            <h4 class="name" style={styName}>{this.props.item.name}</h4>
+            {formatMoney(this.props.objDetail.price)}</p>
+            <h4 class="name" style={styName}>{this.props.objDetail.name}</h4>
             <div class="evaluate" style={evaluate}>
               <ul style={{display:"flex",color:"#f5bd10"}}>
                 <li><FontAwesomeIcon icon={faStar}/></li>
@@ -133,7 +145,7 @@ class ProductInf extends React.Component {
             <div class="button" style={styBntGr}>
               <button class="buy btn" onClick={this.handleOrder}>Add to cart</button>
               <Link to ='/detailProduct'>
-                <button class="details btn" onClick={(e)=>this.viewDetail(e,this.props.item)}>Xem chi tiết</button>
+                <button class="details btn" onClick={(e)=>this.viewDetail(e,this.props.objDetail)}>Xem chi tiết</button>
               </Link>             
             </div>
         </div>           

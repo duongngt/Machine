@@ -81,7 +81,7 @@ class Register extends React.Component {
           axios.post("http://localhost:3001/users",this.state.form)
           .then(response=>{
             console.log(response.data);
-            this.props.dispatch(Notify("block"));
+            this.props.dispatch(Notify("block",{text:'ĐĂNG KÝ THÀNH CÔNG'}));
             this.props.dispatch(Login(response.data));
           }).catch((err)=>{
             console.log(err);

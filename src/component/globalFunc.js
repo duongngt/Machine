@@ -48,27 +48,96 @@ function Validate(formObj){
   return {submit:submit, spanInf:spanInf}
 };
 function GetUsercart(user, callback){
-    axios.get("http://localhost:3001/carts?userId="+ user.id)
-    .then(response=>{
-      if(response.data.length>0 && response.data[0].cart.length>0){
-        GetProductCart(response.data[0].cart,[],0,function(res){
-          callback(res,response.data[0]);
-        })
-      }
-    })
-    function GetProductCart(cart,newCart,index,callback){
-      axios.get("http://localhost:3001/products?id="+ cart[index].productId)
-      .then(response2=>{
-        let obj = response2.data[0];
-        obj.amount = cart[index].amount;
-        newCart.push(obj);
-        index++;
-        if(index < cart.length){
-          GetProductCart(cart,newCart,index,callback);
-        }else{
-          callback(newCart);
-        }
+  axios.get("http://localhost:3001/carts?userId="+ user.id)
+  .then(response=>{
+    if(response.data.length>0){
+      GetProductCart(response.data[0].cart,[],0,function(res){
+        callback(res,response.data[0]);
       })
     }
+    else{
+      callback([],{});
+    }
+  })
+  function GetProductCart(cart,newCart,index,callback){
+    if(cart.length==0){return;}
+    axios.get("http://localhost:3001/products?id="+ cart[index].productId)
+    .then(response2=>{
+      let obj = response2.data[0];
+      obj.amount = cart[index].amount;
+      newCart.push(obj);
+      index++;
+      if(index<cart.length){
+        GetProductCart(cart,newCart,index,callback);
+      }else{
+        callback(newCart);
+      }
+    })
   }
-export {Validate,GetUsercart};
+};
+function AddToCart(props,amount,callback){
+  if(props.user!=null){
+    let hasExist = false;
+    let objCartDb = {...props.cartDb};
+    let myCartDb = (objCartDb.cart==undefined)? [] : objCartDb.cart;
+    let myCart = [...props.cart];
+    for(var i=0; i<myCartDb.length; i++){
+      if(myCartDb[i].productId ==props.objDetail.id){
+        myCartDb[i].amount += amount;
+        myCart[i].amount += amount;
+        hasExist = true;
+        break;
+      }
+    }
+    let objCart ={
+      userId: props.user.id,
+      cart: myCartDb
+    }
+    if(!hasExist){
+      myCartDb.push({
+        productId: props.objDetail.id,
+        amount: amount
+      })
+      let objPro = {...props.objDetail};
+      objPro.amount = amount;
+      myCart.push(objPro);
+      
+    }
+    if(props.cartDb.cart==undefined){
+      // post data----
+      axios.post("http://localhost:3001/carts",objCart)
+      .then(response=>{
+        callback(myCart, response.data);
+      }).catch((err)=>{
+        console.log(err);
+      })
+    }
+    else{
+      axios.patch("http://localhost:3001/carts/"+props.cartDb.id, objCart)
+      .then(response=>{
+        callback(myCart, response.data);
+      })
+    }
+  }else{
+    callback();
+  }
+}
+function formatMoney(price){
+  if(price==undefined){return;}
+  let str = price.toString();
+  let newPrice = [];
+  if(str.length>3){
+    let arrStr = str.split("").reverse();
+    let j=3;
+    for(var i=0; i<arrStr.length; i=i+3){
+      var arrTemp = arrStr.slice(i,j);
+      newPrice.push(arrTemp.reverse().join(""));
+      j = j+3 ; 
+    }
+  }
+  str = newPrice.reverse().join(".");
+  return str;
+}
+
+
+export {Validate,GetUsercart,formatMoney, AddToCart};

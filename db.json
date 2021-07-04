@@ -87,6 +87,28 @@
       "nameLogin": "ngatonha5",
       "passwordLogin": "1234",
       "id": 8
+    },
+    {
+      "name": "bichxi",
+      "email": "bichxi@gmail.com",
+      "password": "1122",
+      "re-password": "1122",
+      "address": "đà nẵng",
+      "phone": "0795466457",
+      "nameLogin": "bichxi",
+      "passwordLogin": "1122",
+      "id": 9
+    },
+    {
+      "name": "bichxi",
+      "email": "bichxi@gmail.com",
+      "password": "1234",
+      "re-password": "1234",
+      "address": "đà nẵng",
+      "phone": "0795466457",
+      "nameLogin": "bichxi1",
+      "passwordLogin": "1234",
+      "id": 10
     }
   ],
   "categories": [
@@ -313,48 +335,70 @@
   "product_detail": [],
   "carts": [
     {
-      "userId": 1,
-      "cart": [
-        {
-          "productId": 0,
-          "amount": 3
-        },
-        {
-          "productId": 1,
-          "amount": 3
-        }
-      ],
-      "id": 1
-    },
-    {
       "userId": 6,
       "cart": [
         {
           "productId": 0,
-          "amount": 4
+          "amount": 3
         },
         {
           "productId": 1,
-          "amount": 4
+          "amount": 1
+        },
+        {
+          "productId": 2,
+          "amount": 2
         },
         {
           "productId": 4,
           "amount": 1
         },
         {
+          "productId": 3,
+          "amount": 1
+        },
+        {
           "productId": 5,
+          "amount": 1
+        }
+      ],
+      "id": 1
+    },
+    {
+      "userId": 1,
+      "cart": [
+        {
+          "productId": 1,
+          "amount": 4
+        },
+        {
+          "productId": 5,
+          "amount": 2
+        },
+        {
+          "productId": 3,
+          "amount": 1
+        }
+      ],
+      "id": 2
+    },
+    {
+      "userId": 10,
+      "cart": [
+        {
+          "productId": 2,
           "amount": 1
         },
         {
           "productId": 3,
-          "amount": 3
+          "amount": 1
         },
         {
-          "productId": 2,
-          "amount": 3
+          "productId": 0,
+          "amount": 4
         }
       ],
-      "id": 2
+      "id": 3
     }
   ]
 }

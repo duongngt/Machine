@@ -10,9 +10,7 @@ class ListProducts extends React.Component {
   	}
   	const list = this.props.products.map((item,index) =>{
   		return(
-  				<ProductInf item={item} key={index}
-            changeCountCart={this.props.changeCountCart}
-          />
+  				<ProductInf  key={index} objDetail={item}/>
   			)
   	})		
     return ( 

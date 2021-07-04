@@ -11,42 +11,10 @@ import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 import { faStar} from '@fortawesome/free-solid-svg-icons'
 import { faCaretDown} from '@fortawesome/free-solid-svg-icons'
 import { faCaretUp} from '@fortawesome/free-solid-svg-icons'
+import {ShowPopupLogin,AmountCart,AddCart,Notify,ShowProductDetail} from "../action.js"
+import {formatMoney,AddToCart} from './globalFunc.js'
 
-class DetailsProducts extends React.Component {
-  constructor(props){
-    super(props);
-    this.state={
-      objDetail:{},
-      infoArr:[{display:"block"},{display:"none"},{display:"none"}],
-      controlBtn:[{background:"#252525", color:"#f5bd10"},{},{}]
-    }
-  }
-  handleInfor=(index)=>{
-    let copState = this.state.infoArr;
-    copState = [{display:"none"},{display:"none"},{display:"none"}];
-    copState[index].display = "block";
-    this.setState({
-      infoArr: copState
-    })
-    let copStateBtn = this.state.controlBtn;
-    copStateBtn = [{},{},{}];
-    copStateBtn[index] = {background :"#252525", color:"#f5bd10"};
-    this.setState({
-      controlBtn: copStateBtn
-    })
-  }
-  static getDerivedStateFromProps(props){
-    return (props.objDetail!=null)? {objDetail:props.objDetail} : {objDetail:JSON.parse(localStorage.getItem("objDetail"))};
-    // if(props.objDetail!=null){
-    //   return {objDetail:props.objDetail}
-    // }
-    // else{
-    //   let objDetail = JSON.parse(localStorage.getItem("objDetail"));
-    //   return  {objDetail:props.objDetail}
-    // }
-  }
-  render(){
-    const Div = styled.div`
+const Div = styled.div`
       display: grid;
       grid-template-columns: 25% 1fr;
       margin-top: 50px;
@@ -235,6 +203,61 @@ class DetailsProducts extends React.Component {
         }
       }
     `
+class DetailsProducts extends React.Component {
+  constructor(props){
+    super(props);
+    this.state={
+      objDetail:{},
+      infoArr:[{display:"block"},{display:"none"},{display:"none"}],
+      controlBtn:[{background:"#252525", color:"#f5bd10"},{},{}],
+      amount: 1
+    }
+  }
+  handleInfor=(index)=>{
+    let copState = this.state.infoArr;
+    copState = [{display:"none"},{display:"none"},{display:"none"}];
+    copState[index].display = "block";
+    this.setState({
+      infoArr: copState
+    })
+    let copStateBtn = this.state.controlBtn;
+    copStateBtn = [{},{},{}];
+    copStateBtn[index] = {background :"#252525", color:"#f5bd10"};
+    this.setState({
+      controlBtn: copStateBtn
+    })
+  }
+  handleAmount=(num)=>{
+    this.setState({
+      amount: this.state.amount+num
+    })
+  }
+  handleOrder=()=>{
+    AddToCart(this.props,this.state.amount,(cart,cartDb)=>{
+      if(cart!=undefined){
+        this.props.dispatch(AddCart(cart, cartDb));
+        this.props.dispatch(Notify("block",{text:"Đã thêm thành công",buttons:[{text:"Xem giỏ hàng"}]}));
+      }else{
+        this.props.dispatch(ShowPopupLogin("block"))
+      }
+    })
+  }
+  componentDidMount(){
+    let objDetail = JSON.parse(localStorage.getItem("objDetail"));
+    this.props.dispatch(ShowProductDetail(objDetail));
+  }
+  static getDerivedStateFromProps(props){
+    return (props.objDetail!=null)? {objDetail:props.objDetail} : null;
+    // if(props.objDetail!=null){
+    //   return {objDetail:props.objDetail}
+    // }
+    // else{
+    //   let objDetail = JSON.parse(localStorage.getItem("objDetail"));
+    //   return  {objDetail:props.objDetail}
+    // }
+  }
+  render(){
+    
     return ( 
       <div>
       	 <Header/>
@@ -274,7 +297,7 @@ class DetailsProducts extends React.Component {
                                 </a>
                               </div>                            
                               <div className="detailProducts-price">
-                                  Giá: <span>{this.state.objDetail.price}</span>
+                                  Giá: <span>{formatMoney(this.state.objDetail.price)}<sup>đ</sup></span>
                               </div>
                             </div>
                         </div>
@@ -305,17 +328,17 @@ class DetailsProducts extends React.Component {
                         </div>
                         <div className="detailProducts-rigth-order">
                           <div className="order-amount">
-                            <input type="text"/>
+                            <input type="text" style={{textAlign:"center"}} value={this.state.amount}/>
                             <div className="order-amount-control">
-                             <a>
+                             <a onClick={(e)=>this.handleAmount(1)}>
                                 <FontAwesomeIcon icon={faCaretUp}/>                             
                               </a>
-                              <a>
+                              <a onClick={(e)=>this.handleAmount(-1)}>
                                 <FontAwesomeIcon icon={faCaretDown}/>                             
                               </a>                            
                             </div>
                           </div>                         
-                          <button>MUA NGAY</button>
+                          <button onClick={this.handleOrder}>MUA NGAY</button>
                         </div>
                         <div className="detailProducts-rigth-social">
                           <ul>
@@ -363,8 +386,11 @@ class DetailsProducts extends React.Component {
 }
 const mapStateToProps=(state)=>{
   return{
+    user:state.user,
     categories: state.categories,
-    objDetail: state.objDetail
+    objDetail: state.objDetail,
+    cart:state.cart,
+    cartDb:state.cartDb
   }
 }
 

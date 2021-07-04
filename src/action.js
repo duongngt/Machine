@@ -35,9 +35,10 @@ export function AddCart(data,dataDb){
 		dataDb: dataDb
 	}
 }
-export function Notify(data){
+export function Notify(data,obj){
 	return{
 		type: "NOTIFY",
-		data: data
+		data: data,
+		obj:obj
 	}
 }

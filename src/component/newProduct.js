@@ -29,7 +29,7 @@ class NewProduct extends React.Component {
   	}
   	const listProduct = this.state.products.map((item,index)=>{
   		return(
-  			<ProductInf key={index} item={item}/>
+  			<ProductInf key={index} objDetail={item}/>
   		)
   	})
     return ( 
