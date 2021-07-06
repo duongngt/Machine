@@ -229,7 +229,7 @@ class DetailsProducts extends React.Component {
   }
   handleAmount=(num)=>{
     this.setState({
-      amount: this.state.amount+num
+      amount:(this.state.amount==0 && num<0)? 0 : this.state.amount+num
     })
   }
   handleOrder=()=>{

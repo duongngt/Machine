@@ -82,7 +82,7 @@ class Notification extends React.Component {
     if(this.state.notifyContent.buttons!=undefined){
       btns = this.state.notifyContent.buttons.map((item,index)=>{
         return(
-          <Link to="/cart"><button onClick={()=>this.props.dispatch(Notify("none"))} className="btn">{item.name}</button></Link>
+          <Link to="/cart"><button onClick={()=>this.props.dispatch(Notify("none"))} className="btn">{item.text}</button></Link>
         )
       })
     }

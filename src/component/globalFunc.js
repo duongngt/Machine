@@ -135,8 +135,7 @@ function formatMoney(price){
       j = j+3 ; 
     }
   }
-  str = newPrice.reverse().join(".");
-  return str;
+  return (newPrice.length==0)? str: newPrice.reverse().join(".");
 }
 
 

@@ -42,3 +42,9 @@ export function Notify(data,obj){
 		obj:obj
 	}
 }
+export function Order(data){
+	return{
+		type: "ORDER",
+		data: data
+	}
+}

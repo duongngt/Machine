@@ -338,12 +338,8 @@
       "userId": 6,
       "cart": [
         {
-          "productId": 0,
-          "amount": 3
-        },
-        {
           "productId": 1,
-          "amount": 1
+          "amount": 2
         },
         {
           "productId": 2,
@@ -351,15 +347,19 @@
         },
         {
           "productId": 4,
-          "amount": 1
+          "amount": 2
         },
         {
           "productId": 3,
-          "amount": 1
+          "amount": 6
         },
         {
           "productId": 5,
-          "amount": 1
+          "amount": 6
+        },
+        {
+          "productId": 8,
+          "amount": 5
         }
       ],
       "id": 1
@@ -387,7 +387,7 @@
       "cart": [
         {
           "productId": 2,
-          "amount": 1
+          "amount": 3
         },
         {
           "productId": 3,
@@ -395,7 +395,11 @@
         },
         {
           "productId": 0,
-          "amount": 4
+          "amount": 5
+        },
+        {
+          "productId": 1,
+          "amount": 1
         }
       ],
       "id": 3

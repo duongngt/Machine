@@ -5,8 +5,9 @@ import styled from 'styled-components';
 import {connect} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import {AmountCart,AddCart} from "../action.js"
+import {AmountCart,AddCart,Order} from "../action.js"
 import {formatMoney} from './globalFunc.js'
+import {Link} from 'react-router-dom'
 
 let Div=styled.div`
 
@@ -31,15 +32,31 @@ let Div=styled.div`
       th{
         padding: 20px 30px;
       }
-    th:nth-child(2){
-      width:20%;
-    }
-    th:nth-child(3){
-      width:26%;
-    }
-    th:nth-child(4){
-      width:16%;
-    }
+      th:nth-child(2){
+        width:20%;
+      }
+      th:nth-child(3){
+        width:26%;
+      }
+      th:nth-child(4){
+        width:16%;
+      }
+      .group-btn{
+        display:inline-flex;
+        justify-content:center;
+        border: 1px solid #e1e1e1;
+        button{
+          width:24px;
+          border:none;
+          outline:none;
+          font-size:22px;
+        }
+        input{
+          width:30px;
+          text-align:center;
+          border:none;
+        }
+      }
     }
     .total-price {
       margin-top:30px;
@@ -63,37 +80,41 @@ class CartPage extends React.Component {
     this.state={
       user:{},
       cart:[],
-      amountCart:0
+      sumNoVAT:0,
+      sum:0,
+      vat:0,
+      amountCart:0,
+      itemsSelected:[],
+      calculatePrice:(arr)=>{
+        let sum=0;
+        arr.forEach((item,index)=>{
+          sum += item.price*item.amount;
+        })
+        return {sum:sum,vat:sum*0.1}
+      }
       
     }
   }
   componentDidMount(){
-    console.log(this.props.cartDb)
+    //console.log(this.props.cartDb)
   }
-  static getDerivedStateFromProps(props, state){
-    return{cart:props.cart}
+  static getDerivedStateFromProps(props,state){
+    let sumPrice = state.calculatePrice(state.itemsSelected);
+    return {cart:props.cart, sum:sumPrice.sum+sumPrice.vat, vat:sumPrice.vat, sumNoVAT:sumPrice.sum}
   }
-  handleDelete=(e,obj,index)=>{
-
-   /* var sum = 0;
-    for(let i=0; i<this.state.cart.length; i++){
-      if(this.state.cart[i]==obj){
-        sum = this.props.amountCart - this.state.cart[i].amount;
-        this.state.cart.splice(i,1);
-        this.props.dispatch(AddCart(this.state.cart));
-        localStorage.setItem("amountCart",sum);
-        localStorage.setItem("cart",JSON.stringify(this.state.cart));
-        break;
-      }*/
-   /* }
-    this.props.dispatch(AmountCart(sum));
-    this.setState({
-      cart: this.state.cart
-    });*/
+  handleDelete=(e,obj,index,num)=>{
     let cartDb = {...this.props.cartDb};
     let cart = this.props.cart;
-    cartDb.cart.splice(index,1);
-    cart.splice(index,1);
+    if(num!=undefined){
+      if(obj.amount>1 || num>0){
+        cartDb.cart[index].amount += num;
+        cart[index].amount += num;
+      }
+    }
+    else{
+      cartDb.cart.splice(index,1);
+      cart.splice(index,1);
+    }
     axios.patch("http://localhost:3001/carts/"+cartDb.id,cartDb)
     .then(response=>{
       console.log(response.data);
@@ -102,24 +123,42 @@ class CartPage extends React.Component {
       console.log(err)
     })
   }
-  render(){
-    let sumPrice = 0
-    let Vat = 0
-    let total = 0
-    this.state.cart.map((item,index)=>{
-      sumPrice += item.price*item.amount;
-      return sumPrice;
+  handleAmount=(num,obj,index)=>{
+    this.handleDelete(null,obj,index,num);
+  }
+  handleCheck=(e,item)=>{
+    let copyItems =this.state.itemsSelected;
+    if(e.target.checked){
+      copyItems.push(item);
+
+    }
+    else{
+      copyItems.forEach((item2,index)=>{
+        if(item2==item){
+          copyItems.splice(index,1);
+        }
+      })
+    }
+    let sumPrice = this.state.calculatePrice(copyItems);
+    this.setState({
+      itemsSelected: copyItems,
+      sumNoVAT: sumPrice.sum,
+      vat:sumPrice.vat,
+      sum:sumPrice.sum+sumPrice.vat
     })
-    Vat = sumPrice*0.1;
-    total = sumPrice + Vat;
+  }
+  handleOrder=()=>{
+    this.props.dispatch(Order(this.state.itemsSelected));
+  }
+  render(){
     const listCart = this.state.cart.map((item,index)=>{
       return(
           <tr>
-            <td>{index}</td>
-            <td><img src={item.img} alt={item.name}/></td>
+            <td><input onClick={(e)=>{this.handleCheck(e,item)}} type="checkbox"/></td>
+            <td><img height="140" src={item.img} alt={item.name}/></td>
             <td>{item.name}</td>
             <td>{formatMoney(item.price)}<sup>đ</sup></td>
-            <td>{item.amount}</td>
+            <td><div className="group-btn"><button onClick={(e)=>this.handleAmount(-1,item,index)}>-</button><input type="text" value={item.amount}/><button onClick={(e)=>this.handleAmount(1,item,index)}>+</button></div></td>
             <td>{formatMoney(item.amount*item.price)}<sup>đ</sup></td>
             <td onClick={(e)=>this.handleDelete(e,item,index)} ><FontAwesomeIcon icon={faTrashAlt}/></td>
           </tr>
@@ -133,7 +172,7 @@ class CartPage extends React.Component {
              <table>
                 <thead>
                   <tr>
-                    <th>STT</th>
+                    <th>CHỌN</th>
                     <th>SẢN PHẨM</th>
                     <th>THÔNG TIN</th>
                     <th>ĐƠN GIÁ</th>
@@ -151,20 +190,20 @@ class CartPage extends React.Component {
               <table>
                  <tr>
                    <th>Tổng tiền:</th>
-                   <th>{formatMoney(sumPrice)}<sup>đ</sup></th>
+                   <th>{formatMoney(this.state.sumNoVAT)}<sup>đ</sup></th>
                  </tr>
                  <tr>
                    <th>Thuế (vat):</th>
-                   <th>{formatMoney(Vat)}<sup>đ</sup></th>
+                   <th>{formatMoney(this.state.vat)}<sup>đ</sup></th>
                  </tr>
                  <tr>
                    <th>Thanh toán:</th>
-                   <th style={{color:"red"}}>{formatMoney(total)}<sup>đ</sup></th>
+                   <th style={{color:"red"}}>{formatMoney(this.state.sum)}<sup>đ</sup></th>
                  </tr>
               </table>
               <div className="btn-control">
-                <button className="btn">TIẾP TỤC MUA HÀNG</button>
-                <button className="btn">THANH TOÁN</button>
+                <Link to="/"><button className="btn">TIẾP TỤC MUA HÀNG</button></Link>
+                <Link to="/order"><button className="btn" onClick={this.handleOrder}>MUA HÀNG</button></Link>
               </div>
           </div>
         </div>
