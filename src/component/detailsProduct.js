@@ -4,13 +4,8 @@ import MenuPanel from './menuPanel.js'
 import {connect} from 'react-redux';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFacebookSquare } from '@fortawesome/free-brands-svg-icons'
-import { faTwitter } from '@fortawesome/free-brands-svg-icons'
-import { faGooglePlusSquare } from '@fortawesome/free-brands-svg-icons'
-import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
-import { faStar} from '@fortawesome/free-solid-svg-icons'
-import { faCaretDown} from '@fortawesome/free-solid-svg-icons'
-import { faCaretUp} from '@fortawesome/free-solid-svg-icons'
+import { faGooglePlusSquare,faTwitter,faFacebookSquare} from '@fortawesome/free-brands-svg-icons'
+import { faCaretUp, faCaretDown,faStar,faPlusSquare} from '@fortawesome/free-solid-svg-icons'
 import {ShowPopupLogin,AmountCart,AddCart,Notify,ShowProductDetail} from "../action.js"
 import {formatMoney,AddToCart} from './globalFunc.js'
 

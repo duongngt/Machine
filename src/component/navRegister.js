@@ -107,7 +107,7 @@ class NavRegister extends React.Component {
     			<li><FontAwesomeIcon icon={faInstagram}/></li>
     			<li><FontAwesomeIcon icon={faTwitter}/></li>
     		</ul>
-    		<ul class="login-tab" style={{display:this.state.loginTab}}> 			
+    		<ul className="login-tab" style={{display:this.state.loginTab}}> 			
           <Link to="/register">
             <li>Đăng ký</li>
           </Link>
@@ -119,6 +119,7 @@ class NavRegister extends React.Component {
             <ul className="popProfile" style={{display:this.state.showProfile}}>
               <li>Profile</li>
               <Link to="/"><li onClick={this.handleLogout}>Logout</li></Link>
+              <Link to="/managerOrder"><li>Đơn hàng</li></Link>
             </ul>
         </div>
       </div>

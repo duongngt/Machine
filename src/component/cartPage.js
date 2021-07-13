@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {AmountCart,AddCart,Order} from "../action.js"
 import {formatMoney} from './globalFunc.js'
-import {Link} from 'react-router-dom'
+import {Link,Redirect} from 'react-router-dom'
 
 let Div=styled.div`
 
@@ -85,12 +85,15 @@ class CartPage extends React.Component {
       vat:0,
       amountCart:0,
       itemsSelected:[],
+      totalAmount:0,
+      link: "/cart",
       calculatePrice:(arr)=>{
-        let sum=0;
+        let sum=0, totalAmount=0;
         arr.forEach((item,index)=>{
           sum += item.price*item.amount;
+          totalAmount += item.amount;
         })
-        return {sum:sum,vat:sum*0.1}
+        return {sum:sum,vat:sum*0.1, totalAmount:totalAmount}
       }
       
     }
@@ -130,7 +133,6 @@ class CartPage extends React.Component {
     let copyItems =this.state.itemsSelected;
     if(e.target.checked){
       copyItems.push(item);
-
     }
     else{
       copyItems.forEach((item2,index)=>{
@@ -144,21 +146,34 @@ class CartPage extends React.Component {
       itemsSelected: copyItems,
       sumNoVAT: sumPrice.sum,
       vat:sumPrice.vat,
-      sum:sumPrice.sum+sumPrice.vat
+      sum:sumPrice.sum+sumPrice.vat,
+      totalAmount:sumPrice.totalAmount
     })
   }
   handleOrder=()=>{
-    this.props.dispatch(Order(this.state.itemsSelected));
+    let date = new Date();
+    let idOrder ='No'+"#"+date.toGMTString().match(/\d/gi).join("") + date.getMilliseconds();
+    let arr = this.state.itemsSelected
+    console.log(arr);
+    let objOrder = {
+      idOrder: idOrder,
+      data: arr,
+      date: date.toDateString(),
+      sumNoVAT: this.state.sumNoVAT,
+      totalAmount:this.state.totalAmount
+    }
+
+    this.props.dispatch(Order(objOrder));
   }
   render(){
     const listCart = this.state.cart.map((item,index)=>{
       return(
-          <tr>
+          <tr key={index}>
             <td><input onClick={(e)=>{this.handleCheck(e,item)}} type="checkbox"/></td>
             <td><img height="140" src={item.img} alt={item.name}/></td>
             <td>{item.name}</td>
             <td>{formatMoney(item.price)}<sup>đ</sup></td>
-            <td><div className="group-btn"><button onClick={(e)=>this.handleAmount(-1,item,index)}>-</button><input type="text" value={item.amount}/><button onClick={(e)=>this.handleAmount(1,item,index)}>+</button></div></td>
+            <td><div className="group-btn"><button onClick={(e)=>this.handleAmount(-1,item,index)}>-</button><input onChange={(e)=>{}} type="text" value={item.amount}/><button onClick={(e)=>this.handleAmount(1,item,index)}>+</button></div></td>
             <td>{formatMoney(item.amount*item.price)}<sup>đ</sup></td>
             <td onClick={(e)=>this.handleDelete(e,item,index)} ><FontAwesomeIcon icon={faTrashAlt}/></td>
           </tr>
@@ -166,6 +181,7 @@ class CartPage extends React.Component {
     })
     return ( 
       <Div className="CartPage">
+        <Redirect to={this.state.link}/>
         <Header/>
         <div className="cart-table wrap">
           <div className="cart-table-products">
@@ -188,18 +204,20 @@ class CartPage extends React.Component {
           </div>
           <div className="total-price">
               <table>
-                 <tr>
-                   <th>Tổng tiền:</th>
-                   <th>{formatMoney(this.state.sumNoVAT)}<sup>đ</sup></th>
-                 </tr>
-                 <tr>
-                   <th>Thuế (vat):</th>
-                   <th>{formatMoney(this.state.vat)}<sup>đ</sup></th>
-                 </tr>
-                 <tr>
-                   <th>Thanh toán:</th>
-                   <th style={{color:"red"}}>{formatMoney(this.state.sum)}<sup>đ</sup></th>
-                 </tr>
+                <tbody>
+                  <tr>
+                     <th>Tổng tiền:</th>
+                     <th>{formatMoney(this.state.sumNoVAT)}<sup>đ</sup></th>
+                   </tr>
+                   <tr>
+                     <th>Thuế (vat):</th>
+                     <th>{formatMoney(this.state.vat)}<sup>đ</sup></th>
+                   </tr>
+                   <tr>
+                     <th>Thanh toán:</th>
+                     <th style={{color:"red"}}>{formatMoney(this.state.sum)}<sup>đ</sup></th>
+                   </tr>
+                </tbody>
               </table>
               <div className="btn-control">
                 <Link to="/"><button className="btn">TIẾP TỤC MUA HÀNG</button></Link>

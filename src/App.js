@@ -11,6 +11,7 @@ import PopupLogin from './component/popupLogin.js';
 import Notification from './component/notification.js';
 import CartPage from './component/cartPage.js'
 import Order from './component/order.js'
+import ManagerOrder from './component/managerOrder.js'
 import {connect} from 'react-redux';
 import {getData} from './action.js';
 import {BrowserRouter as  Router, Route} from 'react-router-dom';
@@ -54,6 +55,7 @@ class App extends React.Component {
             <Route path="/register" exact component={Register}/>
             <Route path="/cart" exact component={CartPage}/>
             <Route path="/order" exact component={Order}/>
+            <Route path="/managerOrder" exact component={ManagerOrder}/>
           </Switch>
           <PopupLogin showPopup={this.state.showPopup}/>
           <Notification/>

@@ -62,8 +62,7 @@ class Notification extends React.Component {
     }
   }
   handleClose=()=>{
-    this.props.dispatch(Notify("none"));
-    
+    this.props.dispatch(Notify("none"));   
   }
   static getDerivedStateFromProps(props){
       if(props.notify=="none"){
@@ -82,7 +81,7 @@ class Notification extends React.Component {
     if(this.state.notifyContent.buttons!=undefined){
       btns = this.state.notifyContent.buttons.map((item,index)=>{
         return(
-          <Link to="/cart"><button onClick={()=>this.props.dispatch(Notify("none"))} className="btn">{item.text}</button></Link>
+          <Link to={item.link}><button onClick={()=>this.props.dispatch(Notify("none"))} className="btn">{item.text}</button></Link>
         )
       })
     }

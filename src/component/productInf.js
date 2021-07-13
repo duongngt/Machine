@@ -10,11 +10,10 @@ import {formatMoney,AddToCart} from './globalFunc.js'
 
 class ProductInf extends React.Component {
   handleOrder=(e)=>{
-    //console.log(this.props.cartDb)
     AddToCart(this.props,1,(cart, cartDb)=>{
       if(cart!=undefined){
         this.props.dispatch(AddCart(cart, cartDb));
-        this.props.dispatch(Notify("block",{text:"Đã thêm thành công",buttons:[{text:"Xem giỏ hàng"}]}));
+        this.props.dispatch(Notify("block",{text:"Đã thêm thành công",buttons:[{text:"Xem giỏ hàng",link:'/cart'}]}));
       }
       else{
         this.props.dispatch(ShowPopupLogin("block"))

@@ -46,7 +46,7 @@ class NavBran extends React.Component {
 					</div>
 				</div>
 				<div className="search">
-					<input type="text" value="Tìm Kiếm..."/>
+					<input type="text" defaultValue="Tìm Kiếm..."/>
 					<FontAwesomeIcon icon={faSearch} />
 				</div>
 			</div>

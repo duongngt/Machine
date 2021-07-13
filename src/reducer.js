@@ -1,4 +1,4 @@
-const stateDefault={categories:[],objDetail:null,showPopup:"none",user:null,notify:"none", notifyContent:{},amountCart:0,cart:[],order:[],cartDb:{},delItem:null}
+const stateDefault={categories:[],objDetail:null,showPopup:"none",user:null,notify:"none", notifyContent:{},amountCart:0,cart:[],order:{},cartDb:{},delItem:null}
 function reducer(state=stateDefault, action){
 	switch(action.type){
 		case "GETDATA":
